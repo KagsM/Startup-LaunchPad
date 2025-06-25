@@ -49,13 +49,15 @@
             </form>
         </div>
         <div id="ideas-list">
-            <select id="idea-bar">
-            <option><button type="button" id="community-ideas">Community Ideas</button></option>
-            <option><button type="button" id="my-ideas">My Ideas</button></option>
-            <option><button type="button" id="draft-ideas">Idea Drafts</button></option>
+        <div id="idea-bar">
+            <select id="idea-select">
+            <option value="community-ideas">Community Ideas</option>
+            <option value="my-ideas">My Ideas</option>
+            <option value="draft-ideas">Idea Drafts</option>
             </select>
             <input type="text" id="search-ideas" placeholder="Search Business Ideas...">
             <button type="button" id="search-button">Search</button>
+        </div>
             <div id="ideas-container"></div>
         </div>
     </div>

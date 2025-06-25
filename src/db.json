@@ -12,7 +12,7 @@
         {
             "title": "AI-Powered Personal Trainer",
             "founder": "Alice Johnson",
-            "image": "https://example.com/image1.jpg",
+            "image": "https://i0.wp.com/frontendmasters.com/blog/wp-content/uploads/2024/03/css2024-thumb.jpg?w=1000&ssl=1",
             "category": "Health & Fitness",
             "stage": "Prototype Stage",
             "description": "An AI-driven app that provides personalized workout plans and nutrition advice.",
@@ -22,7 +22,7 @@
         {
             "title": "Eco-Friendly Packaging Solutions",
             "founder": "Bob Smith",
-            "image": "https://example.com/image2.jpg",
+            "image": "",
             "category": "Sustainability",
             "stage": "Launch Stage",
             "description": "Biodegradable packaging made from plant-based materials.",
@@ -34,7 +34,7 @@
         {
             "title": "AI-Powered Personal Trainer",
             "founder": "Alice Johnson",
-            "image": "https://example.com/image1.jpg",
+            "image": "",
             "category": "Health & Fitness",
             "stage": "Prototype Stage",
             "description": "An AI-driven app that provides personalized workout plans and nutrition advice.",
