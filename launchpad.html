@@ -48,9 +48,11 @@
             </form>
         </div>
         <div id="ideas-list">
-            <button type="button" id="community-ideas">Community Ideas</button>
-            <button type="button" id="my-ideas">My Ideas</button>
-            <button type="button" id="draft-ideas">Idea Drafts</button>
+            <select id="idea-bar">
+            <option><button type="button" id="community-ideas">Community Ideas</button></option>
+            <option><button type="button" id="my-ideas">My Ideas</button></option>
+            <option><button type="button" id="draft-ideas">Idea Drafts</button></option>
+            </select>
             <input type="text" id="search-ideas" placeholder="Search Business Ideas...">
             <button type="button" id="search-button">Search</button>
             <div id="ideas-container"></div>
