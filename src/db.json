@@ -10,6 +10,7 @@
     ],
     "communityIdeas": [
         {
+            "id": 1,
             "title": "AI-Powered Personal Trainer",
             "founder": "Alice Johnson",
             "image": "https://i0.wp.com/frontendmasters.com/blog/wp-content/uploads/2024/03/css2024-thumb.jpg?w=1000&ssl=1",
@@ -20,6 +21,7 @@
             "email": "alice@example.com"
         },
         {
+            "id": 2,
             "title": "Eco-Friendly Packaging Solutions",
             "founder": "Bob Smith",
             "image": "",
@@ -32,6 +34,7 @@
     ],
     "myIdeas": [
         {
+            "id": 1,
             "title": "AI-Powered Personal Trainer",
             "founder": "Alice Johnson",
             "image": "",
@@ -44,6 +47,7 @@
     ],
     "ideaDrafts": [
         {
+            "id":1,
             "title": "AI-Powered Personal Trainer",
             "founder": "Alice Johnson",
             "image": "https://example.com/image1.jpg",
