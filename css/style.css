@@ -6,6 +6,7 @@ body {
     padding: 0;
     justify-content: center;
     align-items: center;
+    scroll-behavior: smooth;
 }
 
 #header, #launchpad-community {
