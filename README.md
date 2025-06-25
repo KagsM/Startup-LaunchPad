@@ -1,5 +1,5 @@
 # Startup-LaunchPad
-Do you have that startup business idea, that product or service to launch into the marketplace? However you're limited in one or the other by today's commercial challenges, be it a base of operations, impossible regional policies, marketing or advertising. Fret no longer, join a community of like-minded entrepreneurs all over the globe and promote your goods and services on a platform you can trust. Startup-LaunchPad brings the market to you and you get to decide whether to be the buyer or the seller at no extra cost.
+Do you have that startup business idea, that product or service to launch into the marketplace? However you're limited in one or the other by today's commercial challenges, be it a base of operations, impossible regional policies, marketing or advertising. Fret no longer, join a community of like-minded entrepreneurs all over the globe and promote your goods and services on a platform you can trust. Startup-LaunchPad brings the market to you and you decide whether to be the buyer or the seller all in one place.
 
 ---
 
