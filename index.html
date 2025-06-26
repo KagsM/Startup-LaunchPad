@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Startup LaunchPad Home Page</title>
+    <title>Document</title>
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
@@ -17,9 +17,45 @@
             <li><a href="./launchpad.html">LaunchPad Community</a></li>
         </ul>
     </div>
-    <div class="main-screen">
-       <h1>Welcome To The Startup LaunchPad</h1>
-       <p>Your one-stop solution for launching that business idea into the marketplace.</p>
+        <h2 id="launchpad-community">The LaunchPad Community</h2>
+    <div class="main-screen" id="launchpad-container">
+        <div id="form-container">
+            <h3>Share Your Business Idea</h3>
+            <form id="idea-form">
+                <input type="text" id="idea-title" placeholder="Business Idea Title" required>
+                <input type="text" id="idea-image" placeholder="Image URL" required>
+                <input type="text" id="idea-category" placeholder="Category" required>
+                <select id="idea-stage" required>
+                    <option value="" disabled selected>Select Stage</option>
+                    <option value="idea">Idea Stage</option>
+                    <option value="prototype">Prototype Stage</option>
+                    <option value="launch">Launch Stage</option>
+                    <option value="growth">Growth Stage</option>
+                    <option value="mature">Mature Stage</option>
+                    <option value="decline">Decline Stage</option>
+                </select>
+                <textarea id="idea-description" placeholder="Describe Your Business Idea..." required></textarea>
+                <input type="text" id="idea-founder" placeholder="Your Name" required>
+                <input type="tel" id="idea-contact" placeholder="Your Phone Number" required>
+                <input type="email" id="idea-email" placeholder="Your Email" required>
+                <button id= "reset-button" type="reset">Reset</button>
+                <button id="draft-button" type="button">Draft Idea</button>
+                <button id="submit-button" type="button">Share Idea</button>
+
+            </form>
+        </div>
+        <div id="ideas-list">
+        <div id="idea-bar">
+            <select id="idea-select">
+            <option value="community-ideas">Community Ideas</option>
+            <option value="my-ideas">My Ideas</option>
+            <option value="draft-ideas">Idea Drafts</option>
+            </select>
+            <input type="text" id="search-ideas" placeholder="Search Business Ideas...">
+            <button type="button" id="search-button">Search</button>
+        </div>
+            <div id="ideas-container"></div>
+        </div>
     </div>
     <div id="footer">
         <p>&copy; 2025 Startup LaunchPad All Rights Reserved</p>
@@ -31,5 +67,6 @@
             <li><a class="social-link" href="https://linkedin.com/startup_launchpad"><img src="./images/LI-In-Bug.png" alt="Linkedin-logo"></a></li>
         </ul>
     </div>
+<script src="src/main.js"></script>
 </body>
 </html>
