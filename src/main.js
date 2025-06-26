@@ -86,7 +86,7 @@ function saveToServer(idea) {
     });
 }
 
-// ✅ UPDATE by TITLE instead of ID
+// UPDATE by TITLE instead of ID
 function updateIdeaByTitle(title, updatedIdea) {
     Promise.all([
         fetch(`${myIdeasURL}?title=${encodeURIComponent(title)}`).then(res => res.json()),
@@ -123,7 +123,7 @@ function updateIdeaByTitle(title, updatedIdea) {
     });
 }
 
-// ✅ DELETE by TITLE instead of ID
+// DELETE by TITLE instead of ID
 function deleteIdeaByTitle(title) {
     Promise.all([
         fetch(`${myIdeasURL}?title=${encodeURIComponent(title)}`).then(res => res.json()),
@@ -258,7 +258,7 @@ function renderIdeas(ideas, type) {
             div.append(commentForm, commentList);
         }
 
-        // ✅ Only for MY IDEAS
+        // Edit and Delete Only for MY IDEAS
         if (type === 'my') {
             const editBtn = document.createElement('button');
             editBtn.textContent = 'Edit';
@@ -270,7 +270,7 @@ function renderIdeas(ideas, type) {
             const deleteBtn = document.createElement('button');
             deleteBtn.textContent = 'Delete';
             deleteBtn.onclick = () => {
-                deleteIdeaByTitle(idea.title); // 🔁 delete using title match
+                deleteIdeaByTitle(idea.title); //delete using title match
             };
 
             div.append(editBtn, deleteBtn);
