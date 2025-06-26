@@ -1,5 +1,5 @@
-const communityIdeasURL = 'http://localhost:3000/communityIdeas';
-const myIdeasURL = 'http://localhost:3000/myIdeas';
+const communityIdeasURL = 'https://my-json-server.typicode.com/KagsM/Startup-LaunchPad/communityIdeas';
+const myIdeasURL = 'https://my-json-server.typicode.com/KagsM/Startup-LaunchPad/myIdeas';
 
 document.addEventListener('DOMContentLoaded', () => {
     displayEventListeners();
