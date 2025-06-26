@@ -1,234 +1,335 @@
-const usersURL = 'http://localhost:3000/users';
 const communityIdeasURL = 'http://localhost:3000/communityIdeas';
 const myIdeasURL = 'http://localhost:3000/myIdeas';
-const ideaDraftsURL = 'http://localhost:3000/ideaDrafts';
-const date = new Date().toLocaleString([], {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
+
+document.addEventListener('DOMContentLoaded', () => {
+    displayEventListeners();
+    displayCommunityIdeas();
+});
+
+function displayEventListeners() {
+    document.getElementById('idea-select').addEventListener('change', (e) => {
+        const value = e.target.value;
+        if (value === 'community-ideas') displayCommunityIdeas();
+        else if (value === 'my-ideas') displayMyIdeas();
+        else if (value === 'draft-ideas') displayIdeaDrafts();
     });
 
-addEventListener('DOMContentLoaded', () => {
-    displayIdeasListener();
-})
+    document.getElementById('draft-button').addEventListener('click', (e) => {
+        e.preventDefault();
+        const idea = getIdeaFromForm();
+        const drafts = getDrafts();
+        const draftIndex = document.getElementById('idea-form').dataset.draftEditIndex;
 
-function displayIdeasListener() {
-document.getElementById('idea-select').addEventListener('change', (e) => {
-    const selectedValue = e.target.value;
-    if (selectedValue === 'community-ideas') {
-        displayCommunityIdeas();
-    } else if (selectedValue === 'my-ideas') {
-        displayMyIdeas();
-    } else if (selectedValue === 'idea-drafts') {
+        if (draftIndex !== undefined) {
+            drafts[draftIndex] = idea;
+            delete document.getElementById('idea-form').dataset.draftEditIndex;
+        } else {
+            drafts.push(idea);
+        }
+
+        localStorage.setItem('ideaDrafts', JSON.stringify(drafts));
+        document.getElementById('idea-form').reset();
         displayIdeaDrafts();
-    }
-});
+        alert('Draft saved!');
+    });
+
+    document.getElementById('submit-button').addEventListener('click', (e) => {
+        e.preventDefault();
+        const idea = getIdeaFromForm();
+        const editingTitle = document.getElementById('idea-form').dataset.editingTitle;
+
+        if (editingTitle) {
+            updateIdeaByTitle(editingTitle, idea);
+            delete document.getElementById('idea-form').dataset.editingTitle;
+        } else {
+            const newIdea = { ...idea, id: crypto.randomUUID(), comments: [], upvotes: 0 };
+            saveToServer(newIdea);
+        }
+
+        document.getElementById('idea-form').reset();
+        displayCommunityIdeas();
+    });
+
+    document.getElementById('reset-button').addEventListener('click', () => {
+        document.getElementById('idea-form').reset();
+        delete document.getElementById('idea-form').dataset.editingTitle;
+        delete document.getElementById('idea-form').dataset.draftEditIndex;
+    });
+
+    document.getElementById('search-button').addEventListener('click', searchIdeas);
+}
+
+function getIdeaFromForm() {
+    return {
+        title: document.getElementById('idea-title').value,
+        image: document.getElementById('idea-image').value,
+        category: document.getElementById('idea-category').value,
+        stage: document.getElementById('idea-stage').value,
+        description: document.getElementById('idea-description').value,
+        founder: document.getElementById('idea-founder').value,
+        contact: document.getElementById('idea-contact').value,
+        email: document.getElementById('idea-email').value,
+    };
+}
+
+function getDrafts() {
+    return JSON.parse(localStorage.getItem('ideaDrafts')) || [];
+}
+
+function saveToServer(idea) {
+    [communityIdeasURL, myIdeasURL].forEach(url => {
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(idea)
+        }).catch(err => console.error(`Error posting to ${url}`, err));
+    });
+}
+
+// ✅ UPDATE by TITLE instead of ID
+function updateIdeaByTitle(title, updatedIdea) {
+    Promise.all([
+        fetch(`${myIdeasURL}?title=${encodeURIComponent(title)}`).then(res => res.json()),
+        fetch(`${communityIdeasURL}?title=${encodeURIComponent(title)}`).then(res => res.json())
+    ])
+    .then(([myIdeas, communityIdeas]) => {
+        const updatePromises = [];
+
+        if (myIdeas[0]) {
+            updatePromises.push(
+                fetch(`${myIdeasURL}/${myIdeas[0].id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedIdea)
+                })
+            );
+        }
+
+        if (communityIdeas[0]) {
+            updatePromises.push(
+                fetch(`${communityIdeasURL}/${communityIdeas[0].id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedIdea)
+                })
+            );
+        }
+
+        return Promise.all(updatePromises);
+    })
+    .then(() => {
+        alert('Idea updated!');
+        displayMyIdeas();
+    });
+}
+
+// ✅ DELETE by TITLE instead of ID
+function deleteIdeaByTitle(title) {
+    Promise.all([
+        fetch(`${myIdeasURL}?title=${encodeURIComponent(title)}`).then(res => res.json()),
+        fetch(`${communityIdeasURL}?title=${encodeURIComponent(title)}`).then(res => res.json())
+    ])
+    .then(([myIdeas, communityIdeas]) => {
+        const deletePromises = [];
+
+        if (myIdeas[0]) {
+            deletePromises.push(fetch(`${myIdeasURL}/${myIdeas[0].id}`, { method: 'DELETE' }));
+        }
+
+        if (communityIdeas[0]) {
+            deletePromises.push(fetch(`${communityIdeasURL}/${communityIdeas[0].id}`, { method: 'DELETE' }));
+        }
+
+        return Promise.all(deletePromises);
+    })
+    .then(() => displayMyIdeas());
 }
 
 function displayCommunityIdeas() {
     fetch(communityIdeasURL)
-    .then(response => response.json())
-    .then(communityIdeas => {
-        const communityIdeasList = document.getElementById('ideas-container');
-        communityIdeasList.innerHTML = '';
-
-        communityIdeas.forEach(communityIdea => {
-            const div = document.createElement('div');
-            div.className = 'idea';
-
-            const img = document.createElement('img');
-            if (!communityIdea.image) {
-                img.src = '/images/wallpaperflare.com_wallpaper.jpg';
-            } else {
-                img.src = communityIdea.image;
-            }
-            img.alt = communityIdea.title;
-
-            const text = document.createElement('p');
-            text.textContent = `${communityIdea.title} by ${communityIdea.founder}`;
-
-            const communityDetails = document.createElement('span');
-            communityDetails.style.display = 'none';
-
-            const communityCategory = document.createElement('p');
-            communityCategory.textContent = `Category: ${communityIdea.category}`;
-            
-            const communityDescription = document.createElement('p');
-            communityDescription.textContent = `Description: ${communityIdea.description}`;
-
-            const communityStage = document.createElement('p');
-            communityStage.textContent = `Stage: ${communityIdea.stage}`;
-
-            const communityContact = document.createElement('p');
-            communityContact.textContent = `Contact: ${communityIdea.contact}`;
-
-            const communityEmail = document.createElement('p');
-            communityEmail.textContent = `Email: ${communityIdea.email}`;
-
-            const communityDate = document.createElement('p');
-            communityDate.textContent = `Added: ${date}`;
-
-            const detailsButton = document.createElement('button');
-            detailsButton.className = 'details-button';
-            detailsButton.textContent = 'Show More';
-
-            detailsButton.addEventListener('click', () => {
-            const isHidden = communityDetails.style.display === 'none';
-            communityDetails.style.display = isHidden ? 'block' : 'none';
-            detailsButton.textContent = isHidden ? 'Show Less' : 'Show More';
-});
-
-            div.appendChild(img);
-            div.appendChild(text);
-            div.appendChild(communityDetails);
-            div.appendChild(detailsButton);
-            communityDetails.appendChild(communityCategory);
-            communityDetails.appendChild(communityDescription);
-            communityDetails.appendChild(communityStage);
-            communityDetails.appendChild(communityContact);
-            communityDetails.appendChild(communityEmail);
-            div.appendChild(communityDate);
-            communityIdeasList.appendChild(div);
-        });
-    });
+        .then(res => res.json())
+        .then(data => renderIdeas(data, 'community'));
 }
 
 function displayMyIdeas() {
     fetch(myIdeasURL)
-    .then(response => response.json())
-    .then(myIdeas => {
-        const myIdeasList = document.getElementById('ideas-container');
-        myIdeasList.innerHTML = '';
-
-        myIdeas.forEach(myIdea => {
-            const div = document.createElement('div');
-            div.className = 'idea';
-
-            const img = document.createElement('img');
-            if (!myIdea.image) {
-                img.src = 'images/css2024-thumb.webp';
-            } else {
-            img.src = myIdea.image;
-            }
-            img.alt = myIdea.title;
-
-            const text = document.createElement('p');
-            text.textContent = `${myIdea.title} by ${myIdea.founder}`;
-
-            const myDetails = document.createElement('span');
-            myDetails.style.display = 'none';
-
-            const myCategory = document.createElement('p');
-            myCategory.textContent = `Category: ${myIdea.category}`;
-            
-            const myDescription = document.createElement('p');
-            myDescription.textContent = `Description: ${myIdea.description}`;
-
-            const myStage = document.createElement('p');
-            myStage.textContent = `Stage: ${myIdea.stage}`;
-
-            const myContact = document.createElement('p');
-            myContact.textContent = `Contact: ${myIdea.contact}`;
-
-            const myEmail = document.createElement('p');
-            myEmail.textContent = `Email: ${myIdea.email}`;
-
-            const myDate = document.createElement('p');
-            myDate.textContent = `Added: ${date}`;
-
-            const detailsButton = document.createElement('button');
-            detailsButton.className = 'details-button';
-            detailsButton.textContent = 'Show More';
-
-            detailsButton.addEventListener('click', () => {
-            const isHidden = myDetails.style.display === 'none';
-            myDetails.style.display = isHidden ? 'block' : 'none';
-            detailsButton.textContent = isHidden ? 'Show Less' : 'Show More';
-});
-
-
-            div.appendChild(img);
-            div.appendChild(text);
-            div.appendChild(myDetails);
-            div.appendChild(detailsButton);
-            myDetails.appendChild(myCategory);
-            myDetails.appendChild(myDescription);
-            myDetails.appendChild(myStage);
-            myDetails.appendChild(myContact);
-            myDetails.appendChild(myEmail);
-            div.appendChild(myDate);
-            myIdeasList.appendChild(div);
-        })
-    })
+        .then(res => res.json())
+        .then(data => renderIdeas(data, 'my'));
 }
 
-function ideaDrafts() {
-    fetch(ideaDraftsURL)
-    .then(response => response.json())
-    .then(ideaDrafts => {
-        const ideaDraftsList = document.getElementById('ideas-container');
-        ideaDraftsList.innerHTML = '';
+function displayIdeaDrafts() {
+    const drafts = getDrafts();
+    renderIdeas(drafts, 'draft');
+}
 
-        ideaDrafts.forEach(ideaDraft => {
-            const div = document.createElement('div');
-            div.className = 'idea';
+function renderIdeas(ideas, type) {
+    const container = document.getElementById('ideas-container');
+    container.innerHTML = '';
 
-            const img = document.createElement('img');
-            if (!ideaDraft.image) {
-                img.src = 'images/css2024-thumb.webp';
-            } else {
-            img.src = ideaDraft.image;
+    ideas.forEach((idea, i) => {
+        const div = document.createElement('div');
+        div.className = 'idea';
+
+        const img = document.createElement('img');
+        img.src = idea.image || 'images/wallpaperflare.com_wallpaper.jpg';
+        img.alt = idea.title;
+
+        const summary = document.createElement('p');
+        summary.textContent = `${idea.title} by ${idea.founder || 'Unknown'}`;
+
+        const details = document.createElement('div');
+        details.style.display = 'none';
+        details.innerHTML = `
+            <p>Category: ${idea.category}</p>
+            <p>Description: ${idea.description}</p>
+            <p>Stage: ${idea.stage}</p>
+            <p>Contact: ${idea.contact}</p>
+            <p>Email: ${idea.email}</p>
+        `;
+
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'community-buttons'
+        toggleBtn.textContent = 'Show More';
+        toggleBtn.onclick = () => {
+            const isHidden = details.style.display === 'none';
+            details.style.display = isHidden ? 'block' : 'none';
+            toggleBtn.textContent = isHidden ? 'Show Less' : 'Show More';
+        };
+
+        div.append(img, summary, toggleBtn, details);
+
+        // Community features
+        if (type === 'community') {
+            const upvoteBtn = document.createElement('button');
+            upvoteBtn.className = 'community-buttons'
+            upvoteBtn.textContent = `▲ ${idea.upvotes || 0}`;
+            upvoteBtn.onclick = () => {
+            const votedIdeas = JSON.parse(localStorage.getItem('votedIdeas') || '[]');
+
+            if (votedIdeas.includes(idea.id)) {
+            alert("You've already upvoted this idea.");
+            return;
             }
-            img.alt = ideaDraft.title;
 
-            const text = document.createElement('p');
-            text.textContent = `${ideaDraft.title} by ${ideaDraft.founder}`;
+            const updatedVotes = (idea.upvotes || 0) + 1;
 
-            const draftDetails = document.createElement('span');
-            draftDetails.style.display = 'none';
+            fetch(`${communityIdeasURL}/${idea.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ upvotes: updatedVotes })
+            })
+            .then(() => {
+            votedIdeas.push(idea.id);
+            localStorage.setItem('votedIdeas', JSON.stringify(votedIdeas));
+            displayCommunityIdeas();
+            });
+            };
+            div.appendChild(upvoteBtn);
 
-            const draftCategory = document.createElement('p');
-            draftCategory.textContent = `Category: ${ideaDraft.category}`;
-            
-            const draftDescription = document.createElement('p');
-            draftDescription.textContent = `Description: ${ideaDraft.description}`;
+            const commentForm = document.createElement('form');
+            commentForm.id = 'comment-form'
+            const commentInput = document.createElement('input');
+            commentInput.id = 'comment-input'
+            commentInput.placeholder = 'Add a comment...';
+            const commentBtn = document.createElement('button');
+            commentBtn.className = 'community-buttons'
+            commentBtn.textContent = 'Post';
+            commentForm.append(commentInput, commentBtn);
 
-            const draftStage = document.createElement('p');
-            draftStage.textContent = `Stage: ${ideaDraft.stage}`;
+            const commentList = document.createElement('ul');
+            (idea.comments || []).forEach(comment => {
+                const li = document.createElement('li');
+                li.textContent = comment;
+                commentList.appendChild(li);
+            });
 
-            const draftContact = document.createElement('p');
-            draftContact.textContent = `Contact: ${ideaDraft.contact}`;
+            commentForm.onsubmit = e => {
+                e.preventDefault();
+                const newComment = commentInput.value.trim();
+                if (!newComment) return;
+                const updated = [...(idea.comments || []), newComment];
+                fetch(`${communityIdeasURL}/${idea.id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ comments: updated })
+                }).then(displayCommunityIdeas);
+            };
 
-            const draftEmail = document.createElement('p');
-            draftEmail.textContent = `Email: ${ideaDraft.email}`;
+            div.append(commentForm, commentList);
+        }
 
-            const draftDate = document.createElement('p');
-            draftDate.textContent = `Added: ${date}`;
+        // ✅ Only for MY IDEAS
+        if (type === 'my') {
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Edit';
+            editBtn.onclick = () => {
+                fillForm(idea);
+                document.getElementById('idea-form').dataset.editingTitle = idea.title;
+            };
 
-            const detailsButton = document.createElement('button');
-            detailsButton.className = 'details-button';
-            detailsButton.textContent = 'Show More';
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.onclick = () => {
+                deleteIdeaByTitle(idea.title); // 🔁 delete using title match
+            };
 
-            detailsButton.addEventListener('click', () => {
-            const isHidden = draftDetails.style.display === 'none';
-            draftDetails.style.display = isHidden ? 'block' : 'none';
-            detailsButton.textContent = isHidden ? 'Show Less' : 'Show More';
-});
+            div.append(editBtn, deleteBtn);
+        }
 
+        if (type === 'draft') {
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Edit';
+            editBtn.onclick = () => {
+                fillForm(idea);
+                document.getElementById('idea-form').dataset.draftEditIndex = i;
+            };
 
-            div.appendChild(img);
-            div.appendChild(text);
-            div.appendChild(draftDetails);
-            div.appendChild(detailsButton);
-            myDetails.appendChild(draftCategory);
-            myDetails.appendChild(draftDescription);
-            myDetails.appendChild(draftStage);
-            myDetails.appendChild(draftContact);
-            myDetails.appendChild(draftEmail);
-            div.appendChild(draftDate);
-            myIdeasList.appendChild(div);
-        })
-    })
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.onclick = () => {
+                const drafts = getDrafts();
+                drafts.splice(i, 1);
+                localStorage.setItem('ideaDrafts', JSON.stringify(drafts));
+                displayIdeaDrafts();
+            };
+
+            div.append(editBtn, deleteBtn);
+        }
+
+        container.appendChild(div);
+    });
+}
+
+function fillForm(idea) {
+    document.getElementById('idea-title').value = idea.title;
+    document.getElementById('idea-image').value = idea.image;
+    document.getElementById('idea-category').value = idea.category;
+    document.getElementById('idea-stage').value = idea.stage;
+    document.getElementById('idea-description').value = idea.description;
+    document.getElementById('idea-founder').value = idea.founder;
+    document.getElementById('idea-contact').value = idea.contact;
+    document.getElementById('idea-email').value = idea.email;
+}
+
+function searchIdeas() {
+    const q = document.getElementById('search-ideas').value.toLowerCase();
+    const type = document.getElementById('idea-select').value;
+
+    const filterFn = idea =>
+        Object.values(idea).some(val =>
+            typeof val === 'string' && val.toLowerCase().includes(q)
+        );
+
+    if (type === 'community-ideas') {
+        fetch(communityIdeasURL).then(res => res.json()).then(data => {
+            renderIdeas(data.filter(filterFn), 'community');
+        });
+    } else if (type === 'my-ideas') {
+        fetch(myIdeasURL).then(res => res.json()).then(data => {
+            renderIdeas(data.filter(filterFn), 'my');
+        });
+    } else if (type === 'draft-ideas') {
+        const drafts = getDrafts();
+        renderIdeas(drafts.filter(filterFn), 'draft');
+    }
 }

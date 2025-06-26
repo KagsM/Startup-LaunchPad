@@ -207,19 +207,29 @@ select {
     margin-bottom: 10px;
 }
 
-.details-button {
+.community-buttons {
     background-color: #333;
     color: white;
     cursor: pointer;
-    width: 100px;
+    margin: 1px;
+    width: max-content;
     border: 1px solid #ccc;
     border-radius: 15px;
-    padding: 5px;
+    padding: 6px;
     font-size: 0.9rem;
 }
 
-.details-button:hover {
+.community-buttons:hover {
     background-color: #555;
+}
+
+#comment-input {
+    width: max-content;
+    padding: 5px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    box-sizing: border-box;
 }
 
 #signup-container,
