@@ -57,6 +57,7 @@ function displayEventListeners() {
     });
 
     document.getElementById('search-button').addEventListener('click', searchIdeas);
+    document.getElementById('search-ideas').addEventListener('input', searchIdeas);
 }
 
 function getIdeaFromForm() {
@@ -206,7 +207,7 @@ function renderIdeas(ideas, type) {
             upvoteBtn.onclick = () => {
             const votedIdeas = JSON.parse(localStorage.getItem('votedIdeas') || '[]');
 
-            if (votedIdeas.includes(idea.id)) {
+            if (votedIdeas.includes(idea.title)) {
             alert("You've already upvoted this idea.");
             return;
             }
@@ -219,7 +220,7 @@ function renderIdeas(ideas, type) {
             body: JSON.stringify({ upvotes: updatedVotes })
             })
             .then(() => {
-            votedIdeas.push(idea.id);
+            votedIdeas.push(idea.title);
             localStorage.setItem('votedIdeas', JSON.stringify(votedIdeas));
             displayCommunityIdeas();
             });
@@ -227,9 +228,9 @@ function renderIdeas(ideas, type) {
             div.appendChild(upvoteBtn);
 
             const commentForm = document.createElement('form');
-            commentForm.id = 'comment-form'
+            commentForm.className = 'comment-form'
             const commentInput = document.createElement('input');
-            commentInput.id = 'comment-input'
+            commentInput.className = 'comment-input'
             commentInput.placeholder = 'Add a comment...';
             const commentBtn = document.createElement('button');
             commentBtn.className = 'community-buttons'
@@ -253,6 +254,7 @@ function renderIdeas(ideas, type) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ comments: updated })
                 }).then(displayCommunityIdeas);
+                commentInput.value = '';
             };
 
             div.append(commentForm, commentList);

@@ -12,6 +12,19 @@
       "email": "kagsm@gmail.com",
       "comments": [],
       "upvotes": 0
+    },
+    {
+      "id": "568368b5-ec43-436a-a765-869c9ce26945",
+      "title": "Bot",
+      "image": "",
+      "category": "Machine",
+      "stage": "idea",
+      "description": "Teleports!",
+      "founder": "MK",
+      "contact": "1234",
+      "email": "mk@gmail.com",
+      "comments": [],
+      "upvotes": 0
     }
   ],
   "myIdeas": [
@@ -25,6 +38,19 @@
       "description": "An AI-driven app that provides personalized workout plans and nutrition advice.",
       "contact": "0754191551",
       "email": "kagsm@gmail.com"
+    },
+    {
+      "id": "568368b5-ec43-436a-a765-869c9ce26945",
+      "title": "Bot",
+      "image": "",
+      "category": "Machine",
+      "stage": "idea",
+      "description": "Teleports!",
+      "founder": "MK",
+      "contact": "1234",
+      "email": "mk@gmail.com",
+      "comments": [],
+      "upvotes": 0
     }
   ]
 }
