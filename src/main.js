@@ -263,6 +263,7 @@ function renderIdeas(ideas, type) {
         // Edit and Delete Only for MY IDEAS
         if (type === 'my') {
             const editBtn = document.createElement('button');
+            editBtn.className = 'community-buttons'
             editBtn.textContent = 'Edit';
             editBtn.onclick = () => {
                 fillForm(idea);
@@ -270,6 +271,7 @@ function renderIdeas(ideas, type) {
             };
 
             const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'community-buttons'
             deleteBtn.textContent = 'Delete';
             deleteBtn.onclick = () => {
                 deleteIdeaByTitle(idea.title); //delete using title match
@@ -280,6 +282,7 @@ function renderIdeas(ideas, type) {
 
         if (type === 'draft') {
             const editBtn = document.createElement('button');
+            editBtn.className = 'community-buttons'
             editBtn.textContent = 'Edit';
             editBtn.onclick = () => {
                 fillForm(idea);
@@ -287,6 +290,7 @@ function renderIdeas(ideas, type) {
             };
 
             const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'community-buttons'
             deleteBtn.textContent = 'Delete';
             deleteBtn.onclick = () => {
                 const drafts = getDrafts();
