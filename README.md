@@ -3,7 +3,8 @@ Do you have that startup business idea, that product or service to launch into t
 
 ---
 
-[![Watch the video](https://raw.githubusercontent.com/KagsM/Startup-LaunchPad/main/images/wallpaperflare.com_wallpaper.jpg)](https://raw.githubusercontent.com/KagsM/Startup-LaunchPad/main/Startup-LaunchPad/Startup-Launchpad.mp4)
+[![Watch the demo](./images/wallpaperflare.com_wallpaper.jpg)](./Startup-Launchpad.mp4)
+
 
 ---
 
