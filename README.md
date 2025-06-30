@@ -3,6 +3,10 @@ Do you have that startup business idea, that product or service to launch into t
 
 ---
 
+[![Watch the video](https://raw.githubusercontent.com/KagsM/Startup-LaunchPad/main/images/wallpaperflare.com_wallpaper.jpg)](https://raw.githubusercontent.com/KagsM/Startup-LaunchPad/main/Startup-LaunchPad/Startup-Launchpad.mp4)
+
+---
+
 ## Features
 Post your Startup idea: A blog based format of sharing business ideas using a form. It is made open to all users with fill out fields such as Titles, Descriptions, Categories, Images, Contact Information all stored on a JSON server.
 
