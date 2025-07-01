@@ -3,7 +3,7 @@ Do you have that startup business idea, that product or service to launch into t
 
 ---
 
-[![Watch the demo](./images/wallpaperflare.com_wallpaper.jpg)](https://photos.google.com/photo/AF1QipPAXZH7_zD06ThDUz4vw13hgr1MhO6EBoIVqCY6)
+[![Watch the demo](./images/wallpaperflare.com_wallpaper.jpg)](https://photos.app.goo.gl/oHwfwkmSzWiLv7YR8)
 
 
 ---
